@@ -20,3 +20,5 @@ lectures.json
 *.mp4
 *.wav
 *.txt
+*.doc
+*.docx
