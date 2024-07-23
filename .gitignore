@@ -1,0 +1,22 @@
+# Python-related files
+__pycache__/
+
+# Virtual environment
+venv/
+env/
+.env
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+
+# Project-specific files and directories
+data/
+lectures.json
+*.mp4
+*.wav
+*.txt
