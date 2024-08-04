@@ -1,9 +1,22 @@
 import logging
+import json
+
 from abc import ABC, abstractmethod
 
 from anthropic import Anthropic
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+PROMPTS_FILE = "summary/summary_prompts.json"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+
+def load_prompts(language):
+    with open(PROMPTS_FILE, "r", encoding="utf-8") as file:
+        prompts = json.load(file)
+    lang_prompt = prompts.get(language, prompts["en"])
+    return lang_prompt
 
 
 class Summarizer(ABC):
@@ -17,22 +30,17 @@ class Summarizer(ABC):
 
 
 class AnthropicSummarizer(Summarizer):
-    def __init__(self, model_name, max_tokens=4096):
+    def __init__(self, model_name, max_tokens=4096, language="en"):
         self.client = Anthropic()
         self.model_name = model_name
         self.max_tokens = max_tokens
+        self.prompts = load_prompts(language)
 
     def summarize_lecture_part(self, text, part_number):
-        prompt = f"""
-        Summarize the following part {part_number} of a transcript. 
-        Use bullet points and headers, as a student would in class notes. 
-        Focus on key points, important concepts, and any examples mentioned:
+        prompt = self.prompts["summarize_lecture_part_prompt"].format(
+            text=text, part_number=part_number
+        )
 
-        {text}
-
-        Provide a concise summary of this section.
-        Do not add any additional information that is not mentioned in this part.
-        """
         try:
             response = self.client.messages.create(
                 max_tokens=self.max_tokens,
@@ -48,15 +56,9 @@ class AnthropicSummarizer(Summarizer):
             raise
 
     def rearrange_summary(self, full_summary):
-        prompt = f"""
-        Given the following raw summary of a full class lecture, please rearrange and refine it 
-        to create a more coherent and well-structured summary. Maintain the use of bullets and headers, 
-        but improve the overall organization and flow of information:
-
-        {full_summary}
-
-        Please provide a refined and well-structured summary of the full lecture.
-        """
+        prompt = self.prompts["rearrange_summary_prompt"].format(
+            full_summary=full_summary
+        )
         try:
             response = self.client.messages.create(
                 max_tokens=self.max_tokens,

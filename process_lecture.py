@@ -40,14 +40,16 @@ def delete_unnecessary_files(lecture_name):
     logger.info(f"Finished cleaning up unnecessary files for {lecture_name}")
 
 
-def process_lecture(lecture):
+def process_lecture(lecture, language="en"):
     start_time = time.time()
 
     downloader = FileDownloader(HttpDownloadStrategy)
     video_processor = VideoProcessor(
         transcriber=OpenAITranscriber(model_name="whisper-1"),
     )
-    summarizer = AnthropicSummarizer(model_name="claude-3-sonnet-20240229")
+    summarizer = AnthropicSummarizer(
+        model_name="claude-3-sonnet-20240229", language=language
+    )
 
     downloader.download(lecture["video_url"], f"data/{lecture['name']}.mp4")
 
@@ -57,7 +59,7 @@ def process_lecture(lecture):
         input_file=f"data/{lecture['name']}.mp4",
         output_dir=f"data/{lecture['name']}",
         transcriptions_dir=transcriptions_folder,
-        language=lecture.get("language", "en"),
+        language=language,
         start_time=lecture["start_time"],
         end_time=lecture["end_time"],
         segment_time="00:10:00",
@@ -69,16 +71,22 @@ def process_lecture(lecture):
     for i, transcript in enumerate(transcripts):
         summary = summarizer.summarize_lecture_part(transcript, i)
         full_summary += "\n\n" + summary
-    SummarySaver.save_summary(full_summary, f"{transcriptions_folder}/raw_full_summary.txt")
+    SummarySaver.save_summary(
+        full_summary, f"{transcriptions_folder}/raw_full_summary.txt"
+    )
 
     processed_full_summary = summarizer.rearrange_summary(full_summary)
-    SummarySaver.save_summary(processed_full_summary, f"{transcriptions_folder}/refined_full_summary.txt")
+    SummarySaver.save_summary(
+        processed_full_summary, f"{transcriptions_folder}/refined_full_summary.txt"
+    )
 
     delete_unnecessary_files(lecture_name=f"data/{lecture['name']}")
 
     end_time = time.time()
     execution_time_minutes = (end_time - start_time) / 60
-    logger.info(f"Lecture {lecture['name']} processed. Execution time: {execution_time_minutes:.2f} minutes")
+    logger.info(
+        f"Lecture {lecture['name']} processed. Execution time: {execution_time_minutes:.2f} minutes"
+    )
 
 
 if __name__ == "__main__":

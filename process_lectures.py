@@ -21,12 +21,14 @@ def main():
         lectures = json.load(file)
 
     for lecture in lectures:
-        process_lecture(lecture)
+        process_lecture(lecture, language="he")
 
     total_end_time = time.time()
     total_execution_time_minutes = (total_end_time - total_start_time) / 60
 
-    logger.info(f"All lectures processed. Total execution time: {total_execution_time_minutes:.2f} minutes")
+    logger.info(
+        f"All lectures processed. Total execution time: {total_execution_time_minutes:.2f} minutes"
+    )
 
 
 if __name__ == "__main__":

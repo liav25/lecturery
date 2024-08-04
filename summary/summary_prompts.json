@@ -1,0 +1,10 @@
+{
+    "en": {
+      "summarize_lecture_part_prompt": "Summarize the following part {part_number} of a transcript. Use bullet points and headers, as a student would in class notes. Focus on key points, important concepts, and any examples mentioned: {text} Provide a concise summary of this section. Do not add any additional information that is not mentioned in this part.",
+      "rearrange_summary_prompt": "Given the following raw summary of a full class lecture, please rearrange and refine it to create a more coherent and well-structured summary. Maintain the use of bullets and headers, but improve the overall organization and flow of information: {full_summary} Please provide a refined and well-structured summary of the full lecture."
+    },
+    "he": {
+      "summarize_lecture_part_prompt": "סכם את החלק {part_number} של ההרצאה. השתמש בנקודות ובכותרות, כפי שתלמיד היה רושם בהערות בכיתה. התמקד בנקודות מפתח, מושגים חשובים, ודוגמאות שהוזכרו. ספק סיכום מפורט של חלק זה ואל תוסיף מידע שלא מוזכר בטקסט שהזנתי לך. בהרצאה: {text}",
+      "rearrange_summary_prompt": "בהתחשב בסיכום הגולמי הבא של הרצאה בכיתה מלאה, אנא ארגן מחדש וחדד אותו כדי ליצור סיכום קוהרנטי ומובנה יותר. שמרו על השימוש בתבליטים ובכותרות, אך שפר את הארגון והזרימה הכוללת של המידע: {full_summary} ארגן מחדש את סיכום ההרצאה המלאה באופן קוהרנטי:"
+    }
+  }
